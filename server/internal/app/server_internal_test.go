@@ -1,15 +1,17 @@
 package server
 
 import (
-	server "github.com/sava-cska/SPbSU-Calculator/internal/app"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestServer_HandleHello(t *testing.T) {
-	serv := server.New(server.NewConfig())
+	serv := New(NewConfig())
 	recorder := httptest.NewRecorder()
 	request, _ := http.NewRequest(http.MethodGet, "/hello", nil)
-	serv.
+	serv.handleHello().ServeHTTP(recorder, request)
+
+	assert.Equal(t, recorder.Body.String(), "Hello")
 }
