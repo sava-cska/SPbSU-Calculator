@@ -14,12 +14,15 @@ import com.calculator.input.api.CalculatorInputObserver
 import com.calculator.util.Digit
 import com.calculator.view_model.EvaluationViewModel
 
+
 class EvaluationComponentImpl(
     private val tokens: List<EvaluationToken>,
     calculatorInputObserver: CalculatorInputObserver,
-    vm : EvaluationViewModel
+    vm: EvaluationViewModel
+
 ) : EvaluationComponent {
-    private val itemsState: MutableState<List<ListItem>> = mutableStateOf(listOf(EmptyField) + tokens)
+    private val itemsState: MutableState<List<ListItem>> =
+        mutableStateOf(listOf(EmptyField) + tokens)
 
     private val listener = object : CalculatorInputListener {
         override fun onOperationClick(operation: Operation) {
@@ -94,9 +97,10 @@ class EvaluationComponentImpl(
             itemsState.value = listOf(EmptyField)
         }
 
-        override fun onEvaluateClick()  {
+        override fun onEvaluateClick() {
             vm.evaluate(tokens, "")
         }
+
     }
 
     init {

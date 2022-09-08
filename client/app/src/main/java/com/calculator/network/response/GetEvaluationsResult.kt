@@ -7,6 +7,6 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class GetEvaluationsResult (
+data class GetEvaluationsResult(
     @Json(name = "evaluations") val evaluations: List<EvaluationRequestAndResult>
 )
