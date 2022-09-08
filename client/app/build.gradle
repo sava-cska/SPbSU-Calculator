@@ -92,4 +92,6 @@ dependencies {
 
     // https://github.com/haroldadmin/NetworkResponseAdapter.
     implementation "com.github.haroldadmin:NetworkResponseAdapter:5.0.0"
+
+    implementation 'androidx.activity:activity-ktx:1.5.1'
 }

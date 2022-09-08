@@ -18,7 +18,7 @@ interface Api {
         @Body request: EvaluationRequest
     ): NetworkResponse<EvaluationResult, EvaluationErrorResponse>
 
-    @POST("getEvaluations")
+    @GET("getEvaluations")
     suspend fun getEvaluations(
         @Body request: GetEvaluationsRequest
     ): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse>
