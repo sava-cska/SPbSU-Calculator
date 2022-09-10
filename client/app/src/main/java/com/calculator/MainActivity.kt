@@ -1,7 +1,6 @@
 package com.calculator
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -11,18 +10,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.calculator.evaluation.ui.EvaluationComponentImpl
 import com.calculator.ui.input.CalculatorKeyboard
 import com.calculator.ui.theme.CalculatorTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: EvaluatorViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +25,9 @@ class MainActivity : ComponentActivity() {
         val evaluationComponent = EvaluationComponentImpl(
             tokens = listOf(),
             calculatorInputObserver = inputComponent,
-            vm = viewModel
+            evaluator = viewModel,
+            lifecycleOwner = this
         )
-        subscribeToEvaluateStatus()
 
         setContent {
             CalculatorTheme {
@@ -70,29 +65,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun subscribeToEvaluateStatus() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.evaluateStateFlow().collect { vs ->
-                    when (vs) {
-                        MainViewModel.EvaluationState.Pending -> {
-                            Log.d(TAG, "pending")
-                        }
-                        MainViewModel.EvaluationState.Loading -> {
-                            Log.d(TAG, "loading")
-                        }
-                        is MainViewModel.EvaluationState.Success -> {
-                            Log.d(TAG, vs.res.body.result)
-                        }
-                        is MainViewModel.EvaluationState.ServerError -> {}
-                        is MainViewModel.EvaluationState.NetworkError -> {}
-                        is MainViewModel.EvaluationState.UnknownError -> {}
-                        is MainViewModel.EvaluationState.Exception -> {}
-                    }
-                }
-            }
-        }
-    }
+
 
     companion object {
         private val TAG = "MainActivityEval"

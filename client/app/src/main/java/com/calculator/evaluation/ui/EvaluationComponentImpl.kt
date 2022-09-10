@@ -1,28 +1,37 @@
 package com.calculator.evaluation.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionContext
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.calculator.entities.EmptyField
 import com.calculator.entities.EvaluationToken
 import com.calculator.entities.ListItem
 import com.calculator.entities.Numeric
 import com.calculator.entities.Operation
 import com.calculator.entities.Parentheses
+import com.calculator.evaluation.Evaluator
 import com.calculator.input.api.CalculatorInputListener
 import com.calculator.input.api.CalculatorInputObserver
 import com.calculator.util.Digit
 import com.calculator.view_model.EvaluationViewModel
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
 
 
 class EvaluationComponentImpl(
     private val tokens: List<EvaluationToken>,
     calculatorInputObserver: CalculatorInputObserver,
-    vm: EvaluationViewModel
+    evaluator: Evaluator,
+    lifecycleOwner: LifecycleOwner
 
 ) : EvaluationComponent {
-    private val itemsState: MutableState<List<ListItem>> =
-        mutableStateOf(listOf(EmptyField) + tokens)
+    private val itemsState: MutableState<List<ListItem>> = mutableStateOf(listOf(EmptyField) + tokens)
+
+    private var deferredEvaluation : Deferred<Evaluator.Result>? = null
 
     private val listener = object : CalculatorInputListener {
         override fun onOperationClick(operation: Operation) {
@@ -98,7 +107,17 @@ class EvaluationComponentImpl(
         }
 
         override fun onEvaluateClick() {
-            vm.evaluate(tokens, "")
+            deferredEvaluation = evaluator.evaluate(tokens)
+
+            // временно оставил, чтобы можно было проверить
+            lifecycleOwner.lifecycleScope.launch {
+                deferredEvaluation?.await()?.let { res ->
+                    when(res) {
+                        is Evaluator.Result.Success ->  Log.d("evaldef", res.res)
+                        is Evaluator.Result.Error -> Log.d("evaldef", res.error.joinToString(separator = ", "))
+                    }
+                }
+            }
         }
 
     }
