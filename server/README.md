@@ -7,4 +7,4 @@ I have added customizable path to the config file, try to run `./main --help`.
 
 In order to test all cases - run `make test`.
 
-Right now server is located in `localhost:8080`, I have added `/hello` action.
+Example of action: http://51.250.98.212:8080/hello
