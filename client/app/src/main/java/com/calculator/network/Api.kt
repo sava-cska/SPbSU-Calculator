@@ -13,12 +13,12 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface Api {
-    @POST("evaluate")
+    @POST("evaluations")
     suspend fun evaluate(
         @Body request: EvaluationRequest
     ): NetworkResponse<EvaluationResult, EvaluationErrorResponse>
 
-    @GET("getEvaluations")
+    @GET("evaluations")
     suspend fun getEvaluations(
         @Body request: GetEvaluationsRequest
     ): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse>

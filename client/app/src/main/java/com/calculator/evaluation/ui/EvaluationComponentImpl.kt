@@ -100,7 +100,7 @@ class EvaluationComponentImpl(
         }
 
         override fun onEvaluateClick() {
-            deferredEvaluation = evaluator.evaluate(tokens)
+            deferredEvaluation = evaluator.evaluate(connectItems(itemsState.value).filterIsInstance(EvaluationToken::class.java))
 
             // временно оставил, чтобы можно было проверить
             lifecycleOwner.lifecycleScope.launch {
@@ -112,7 +112,6 @@ class EvaluationComponentImpl(
                 }
             }
         }
-
     }
 
     init {

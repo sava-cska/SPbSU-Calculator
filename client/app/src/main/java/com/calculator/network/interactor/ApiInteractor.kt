@@ -15,7 +15,9 @@ import com.calculator.util.toJsonToken
 import com.haroldadmin.cnradapter.NetworkResponse
 import dagger.Lazy
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ApiInteractor @Inject constructor(
     private val apiLazy: Lazy<Api>
 ) {
