@@ -98,7 +98,7 @@ class EvaluationComponentImpl(
         }
 
         override fun onEvaluateClick() {
-            vm.evaluate(tokens, "")
+            vm.evaluate(connectItems(itemsState.value).filterIsInstance(EvaluationToken::class.java), "111")
         }
 
     }
