@@ -1,8 +1,10 @@
 package com.calculator
 
+import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calculator.entities.EvaluationToken
+import com.calculator.entities.UserIdHolder
 import com.calculator.evaluation.Evaluator
 import com.calculator.network.interactor.ApiInteractor
 import com.calculator.network.response.EvaluationResult
@@ -16,15 +18,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EvaluatorViewModel @Inject constructor(
-    private val apiInteractor: ApiInteractor
+    private val apiInteractor: ApiInteractor,
+    private val userIdHolder: UserIdHolder,
 ) : ViewModel(), Evaluator {
 
-    private val userId = "Billy"
-
-    override fun evaluate(tokens: List<EvaluationToken>): Deferred<Evaluator.Result> =
+    override fun evaluateAsync(tokens: List<EvaluationToken>): Deferred<Evaluator.Result> =
         viewModelScope.async(Dispatchers.Default) {
             try {
-                return@async when (val response = apiInteractor.evaluate(tokens, userId)) {
+                return@async when (val response = apiInteractor.evaluate(tokens, userIdHolder.userId)) {
                     is NetworkResponse.Success<EvaluationResult, EvaluationErrorResponse> -> {
                         Success(response)
                     }

@@ -5,13 +5,15 @@ import kotlinx.coroutines.Deferred
 
 
 interface Evaluator {
-    fun evaluate(tokens: List<EvaluationToken>) : Deferred<Result>
+    fun evaluateAsync(tokens: List<EvaluationToken>): Deferred<Result>
+    
     interface Result {
         interface Success : Result {
             val res: String
         }
+
         interface Error : Result {
-            val error : List<String>
+            val error: List<String>
         }
     }
 }

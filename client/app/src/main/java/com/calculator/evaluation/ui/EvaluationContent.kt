@@ -3,6 +3,7 @@ package com.calculator.evaluation.ui
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,10 +33,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.calculator.entities.EmptyField
+import com.calculator.entities.EqualitySign
 import com.calculator.entities.ListItem
 import com.calculator.entities.Numeric
 import com.calculator.entities.Operation
 import com.calculator.entities.Parentheses
+import com.calculator.entities.ResultField
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalUnitApi::class)
 @Composable
@@ -47,10 +50,10 @@ fun EvaluationContent(
         itemsState
     }
     val state = rememberLazyListState()
-    val scope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
     LazyRow(
         state = state,
+        contentPadding = PaddingValues(horizontal = 20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -60,11 +63,6 @@ fun EvaluationContent(
         verticalAlignment = Alignment.CenterVertically,
         content = {
             items(items) { item ->
-                val customTextSelectionColors = TextSelectionColors(
-                    handleColor = Color.Transparent,
-                    backgroundColor = Color.Transparent,
-                )
-
                 val modifier = Modifier
                     .width(IntrinsicSize.Min)
                     .height(IntrinsicSize.Min)
@@ -122,7 +120,18 @@ fun EvaluationContent(
                         text = AnnotatedString("_"),
                         onClick = { onClick.invoke(it, item) },
                     )
-                    else -> throw RuntimeException()
+                    is EqualitySign -> ClickableText(
+                        style = textStyle,
+                        modifier = modifier,
+                        text = AnnotatedString("="),
+                        onClick = { onClick.invoke(it, item) },
+                    )
+                    is ResultField -> ClickableText(
+                        style = textStyle,
+                        modifier = modifier,
+                        text = AnnotatedString(item.result.value),
+                        onClick = { onClick.invoke(it, item) },
+                    )
                 }
             }
         },

@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Calculator</string>
+    <string name="all_evaluations_button_name">История</string>
+    <string name="existing_evaluation_button_name">Назад</string>
+    <string name="evaluation_error_toast">Ошыбка в выражении</string>
 </resources>

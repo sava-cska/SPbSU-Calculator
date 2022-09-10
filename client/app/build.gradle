@@ -102,4 +102,9 @@ dependencies {
 
     releaseImplementation 'com.facebook.flipper:flipper-noop:0.163.0'
     debugImplementation 'com.facebook.flipper:flipper-network-plugin:0.163.0'
+    
+    def nav_version = "2.5.2"
+
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+    implementation 'androidx.ui:ui-foundation:0.1.0-dev03'
 }

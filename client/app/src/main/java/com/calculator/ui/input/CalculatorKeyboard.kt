@@ -208,16 +208,16 @@ class CalculatorKeyboard : CalculatorInputComponent {
             CalculatorButton.ClearAllButton -> inputListener?.onClearAllClick()
             CalculatorButton.EraseButton -> inputListener?.onEraseClick()
             is CalculatorButton.DigitButton -> inputListener?.onDigitClick(Digit(button.digit))
-            CalculatorButton.AdditionButton -> inputListener?.onOperationClick(Operation.Addition)
-            CalculatorButton.SubtractButton -> inputListener?.onOperationClick(Operation.Subtract)
-            CalculatorButton.MultiplicationButton -> inputListener?.onOperationClick(Operation.Multiplication)
-            CalculatorButton.DivisionButton -> inputListener?.onOperationClick(Operation.Division)
+            CalculatorButton.AdditionButton -> inputListener?.onOperationClick(Operation.Addition())
+            CalculatorButton.SubtractButton -> inputListener?.onOperationClick(Operation.Subtract())
+            CalculatorButton.MultiplicationButton -> inputListener?.onOperationClick(Operation.Multiplication())
+            CalculatorButton.DivisionButton -> inputListener?.onOperationClick(Operation.Division())
             CalculatorButton.EvalButton -> inputListener?.onEvaluateClick()
             CalculatorButton.ForwardParenthesesButton -> inputListener?.onParenthesesClick(
-                Parentheses.Forward
+                Parentheses.Forward()
             )
             CalculatorButton.BackParenthesesButton -> inputListener?.onParenthesesClick(
-                Parentheses.Back
+                Parentheses.Back()
             )
         }
     }
