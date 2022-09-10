@@ -6,6 +6,6 @@ import com.calculator.entities.EvaluationToken
 interface EvaluationComponent {
     @Composable
     fun EvaluationContent()
-
-    fun getCurrentEvaluation(): List<EvaluationToken>
+    
+    fun setTokens(tokens: List<EvaluationToken>, result: String?, editable: Boolean)
 }

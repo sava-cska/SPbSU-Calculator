@@ -1,26 +1,36 @@
 package com.calculator.evaluation.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.calculator.entities.EmptyField
-import com.calculator.entities.EvaluationToken
-import com.calculator.entities.ListItem
-import com.calculator.entities.Numeric
-import com.calculator.entities.Operation
-import com.calculator.entities.Parentheses
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.calculator.R
+import com.calculator.entities.*
+import com.calculator.evaluation.Evaluator
 import com.calculator.input.api.CalculatorInputListener
 import com.calculator.input.api.CalculatorInputObserver
 import com.calculator.util.Digit
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
+
 
 class EvaluationComponentImpl(
-    private val tokens: List<EvaluationToken>,
     calculatorInputObserver: CalculatorInputObserver,
+    evaluator: Evaluator,
+    lifecycleOwner: LifecycleOwner,
+    context: Context,
 ) : EvaluationComponent {
-    private val itemsState: MutableState<List<ListItem>> = mutableStateOf(listOf(EmptyField) + tokens)
+    private val itemsState: MutableState<List<ListItem>> = mutableStateOf(listOf(EmptyField))
+
+    private var deferredEvaluation: Deferred<Evaluator.Result>? = null
 
     private val listener = object : CalculatorInputListener {
         override fun onOperationClick(operation: Operation) {
+            dropEvaluation()
+            dropResult()
             val index = getCurrentIndex()
             if (index < 0) {
                 return
@@ -31,6 +41,8 @@ class EvaluationComponentImpl(
         }
 
         override fun onParenthesesClick(parentheses: Parentheses) {
+            dropEvaluation()
+            dropResult()
             val index = getCurrentIndex()
             if (index < 0) {
                 return
@@ -41,6 +53,8 @@ class EvaluationComponentImpl(
         }
 
         override fun onDigitClick(digit: Digit) {
+            dropEvaluation()
+            dropResult()
             val index = getCurrentIndex()
             if (index < 0) {
                 return
@@ -63,6 +77,8 @@ class EvaluationComponentImpl(
         }
 
         override fun onEraseClick() {
+            dropEvaluation()
+            dropResult()
             val index = getCurrentIndex()
             if (index < 0) {
                 return
@@ -89,10 +105,32 @@ class EvaluationComponentImpl(
         }
 
         override fun onClearAllClick() {
+            dropEvaluation()
             itemsState.value = listOf(EmptyField)
         }
 
-        override fun onEvaluateClick() = Unit
+        override fun onEvaluateClick() {
+            dropEvaluation()
+            deferredEvaluation =
+                evaluator.evaluateAsync(connectItems(itemsState.value).filterIsInstance(EvaluationToken::class.java))
+
+            // временно оставил, чтобы можно было проверить
+            lifecycleOwner.lifecycleScope.launch {
+                deferredEvaluation?.await()?.let { res ->
+                    when (res) {
+                        is Evaluator.Result.Success -> {
+                            dropResult()
+                            appendResult(res.res)
+                        }
+                        is Evaluator.Result.Error -> Toast.makeText(
+                            context,
+                            R.string.evaluation_error_toast,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        }
     }
 
     init {
@@ -104,22 +142,38 @@ class EvaluationComponentImpl(
         EvaluationContent(
             itemsState = itemsState,
             onClick = { position, item ->
-                if (itemsState.value.contains(item)) {
-                    itemsState.value = processItems(itemsState.value, SelectionData(item, position))
+                if (itemsState.value.contains(item) && item !is EqualitySign && item !is ResultField) {
+                    itemsState.value =
+                        processItems(itemsState.value, SelectionData(item, position))
                 }
             }
         )
     }
 
-    override fun getCurrentEvaluation(): List<EvaluationToken> {
-        return tokens
+    override fun setTokens(tokens: List<EvaluationToken>, result: String?, editable: Boolean) {
+        dropEvaluation()
+        itemsState.value = buildList {
+            if (editable) {
+                add(EmptyField)
+            }
+            addAll(tokens)
+        }
+        if (result != null) {
+            appendResult(result)
+        }
     }
 
     private fun getCurrentIndex(): Int {
         return itemsState.value.indexOf(EmptyField)
     }
 
-    private fun processItems(items: List<ListItem>, selectionData: SelectionData): List<ListItem> {
+    /**
+     * Перевыбирает item на тот, что передан в selectionData
+     */
+    private fun processItems(
+        items: List<ListItem>,
+        selectionData: SelectionData,
+    ): List<ListItem> {
         if (items.isEmpty()) {
             return listOf(EmptyField)
         }
@@ -172,19 +226,38 @@ class EvaluationComponentImpl(
     private fun connectItems(items: List<ListItem>): List<ListItem> {
         val index = items.indexOf(EmptyField)
         if (index <= 0 || index == items.lastIndex) {
-            return items.filter { it !is EmptyField }
+            return filterTemporaryItems(items)
         }
         val prev = items[index - 1]
         val next = items[index + 1]
         if (prev !is Numeric || next !is Numeric) {
-            return items.filter { it !is EmptyField }
+            return filterTemporaryItems(items)
         }
         val merged = Numeric(prev.value + next.value, Any())
         val newList = items.toMutableList()
         newList.add(index, merged)
         newList.remove(prev)
         newList.remove(next)
-        newList.remove(EmptyField)
-        return newList
+        return filterTemporaryItems(newList)
+    }
+
+    private fun filterTemporaryItems(items: List<ListItem>): List<ListItem> {
+        return items.filter { it !is EmptyField }
+    }
+
+    private fun dropResult() {
+        itemsState.value = (itemsState.value.filter { it !is EqualitySign && it !is ResultField }).toMutableList()
+    }
+
+    private fun dropEvaluation() {
+        deferredEvaluation?.cancel()
+        deferredEvaluation = null
+    }
+
+    private fun appendResult(result: String) {
+        val items = itemsState.value.toMutableList()
+        items.add(EqualitySign)
+        items.add(ResultField(Numeric(result, Any())))
+        itemsState.value = items
     }
 }

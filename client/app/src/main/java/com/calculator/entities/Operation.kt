@@ -5,6 +5,4 @@ sealed interface Operation: EvaluationToken {
     class Multiplication : Operation
     class Division : Operation
     class Subtract : Operation
-    class Percent : Operation
-    class SquareRoot : Operation
 }

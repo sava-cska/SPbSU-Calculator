@@ -3,23 +3,41 @@ package com.calculator
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.calculator.evaluation.ui.EvaluationComponentFactory
 import com.calculator.evaluation.ui.EvaluationComponentImpl
+import com.calculator.input.api.CalculatorInputComponentFactory
 import com.calculator.ui.input.CalculatorKeyboard
 import com.calculator.ui.theme.CalculatorTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel: EvaluatorViewModel by viewModels()
+    private val evaluationsDataSource: AllEvaluationsViewModel by viewModels()
+
+    @Inject
+    lateinit var evaluationComponentFactory: EvaluationComponentFactory
+
+    @Inject
+    lateinit var inputComponentFactory: CalculatorInputComponentFactory
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val inputComponent = CalculatorKeyboard()
-        val evaluationComponent = EvaluationComponentImpl(
-            tokens = listOf(),
-            calculatorInputObserver = inputComponent,
+        val mainCalculatorInputComponent = inputComponentFactory.createCalculatorInputComponent()
+        val mainEvaluationComponent = evaluationComponentFactory.createEvaluationComponent(
+            calculatorInputObserver = mainCalculatorInputComponent,
+            evaluator = viewModel,
+            lifecycleOwner = this,
+            context = this,
         )
         setContent {
             CalculatorTheme {
@@ -28,32 +46,22 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ConstraintLayout {
-                        val (eval, input) = createRefs()
-                        Box(
-                            Modifier
-                                .constrainAs(eval) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(input.top)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                }
-                        ) {
-                            evaluationComponent.EvaluationContent()
-                        }
-                        Box(
-                            Modifier
-                                .constrainAs(input) {
-                                    bottom.linkTo(parent.bottom)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                }
-                        ) {
-                            inputComponent.CalculatorInput()
-                        }
-                    }
+                    MainScreen(
+                        mainEvaluationComponent = mainEvaluationComponent,
+                        mainCalculatorInput = mainCalculatorInputComponent,
+                        evaluationComponentFactory = evaluationComponentFactory,
+                        context = this,
+                        lifecycleOwner = this,
+                        evaluator = viewModel,
+                        evaluationsDataSource = evaluationsDataSource,
+                    )
                 }
             }
         }
+    }
+
+
+    companion object {
+        private val TAG = "MainActivityEval"
     }
 }
