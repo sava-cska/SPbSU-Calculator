@@ -30,12 +30,12 @@ class AllEvaluationsViewModel @Inject constructor(
     private val apiInteractor: ApiInteractor,
     private val userIdHolder: UserIdHolder,
 ) : ViewModel(), EvaluationsDataSource {
-    override val evaluations: StateFlow<List<Pair<List<EvaluationToken>, String>>>
+    override val evaluations: StateFlow<List<Pair<List<EvaluationToken>, String?>>>
         get() {
             return innerFlow
         }
 
-    private val innerFlow: MutableStateFlow<List<Pair<List<EvaluationToken>, String>>> = MutableStateFlow(listOf())
+    private val innerFlow: MutableStateFlow<List<Pair<List<EvaluationToken>, String?>>> = MutableStateFlow(listOf())
 
     override fun reload() {
         viewModelScope.launch(Dispatchers.IO) {
