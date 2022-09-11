@@ -42,6 +42,7 @@ class CalculatorKeyboard : CalculatorInputComponent {
         object EvalButton : CalculatorButton
         object ForwardParenthesesButton : CalculatorButton
         object BackParenthesesButton : CalculatorButton
+        object CommaButton : CalculatorButton
     }
 
     private var inputListener: CalculatorInputListener? = null
@@ -154,8 +155,13 @@ class CalculatorKeyboard : CalculatorInputComponent {
             48.dp,
             digitsColor,
             CalculatorButton.DigitButton('0')
+        ), 
+        KeyBoardButtonParams(
+            R.drawable.ic_icons8_comma_96,
+            24.dp,
+            Color.Black,
+            CalculatorButton.CommaButton
         ),
-        null,
         KeyBoardButtonParams(
             R.drawable.ic_icons8_equal_sign_100,
             32.dp,
@@ -219,6 +225,7 @@ class CalculatorKeyboard : CalculatorInputComponent {
             CalculatorButton.BackParenthesesButton -> inputListener?.onParenthesesClick(
                 Parentheses.Back()
             )
+            CalculatorButton.CommaButton -> inputListener?.onCommaClick()
         }
     }
 }

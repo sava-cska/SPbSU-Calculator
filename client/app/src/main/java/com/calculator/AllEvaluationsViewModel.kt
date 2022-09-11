@@ -7,6 +7,7 @@ import com.calculator.entities.EvaluationToken
 import com.calculator.entities.UserIdHolder
 import com.calculator.evaluation.EvaluationsDataSource
 import com.calculator.network.interactor.ApiInteractor
+import com.calculator.network.request.GetEvaluationsRequest
 import com.calculator.network.request.Token
 import com.calculator.network.response.EvaluationResult
 import com.calculator.network.response.GetEvaluationsResult
@@ -39,7 +40,7 @@ class AllEvaluationsViewModel @Inject constructor(
     override fun reload() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                when (val evaluations = apiInteractor.getEvaluations(userId = userIdHolder.userId)) {
+                when (val evaluations = apiInteractor.getEvaluations(GetEvaluationsRequest(userIdHolder.userId))) {
                     is NetworkResponse.Success<GetEvaluationsResult, GetEvaluationsErrorResponse> -> {
                         innerFlow.emit(
                             evaluations.body.evaluations.map { evaluation ->

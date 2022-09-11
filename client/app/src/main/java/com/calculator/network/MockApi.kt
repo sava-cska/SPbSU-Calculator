@@ -23,7 +23,7 @@ class MockApi : Api {
         )
     }
 
-    override suspend fun getEvaluations(userUid: String): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse> {
+    override suspend fun getEvaluations(request: GetEvaluationsRequest): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse> {
         delay(500)
         return NetworkResponse.Success(
             GetEvaluationsResult(

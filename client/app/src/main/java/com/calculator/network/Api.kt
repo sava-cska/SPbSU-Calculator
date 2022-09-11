@@ -15,13 +15,13 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface Api {
-    @POST("evaluations")
+    @POST("evaluations/calculate")
     suspend fun evaluate(
         @Body request: EvaluationRequest
     ): NetworkResponse<EvaluationResult, EvaluationErrorResponse>
 
-    @GET("evaluations")
+    @POST("evaluations/list")
     suspend fun getEvaluations(
-        @Query("UserUid") userUid: String,
+        @Body request: GetEvaluationsRequest,
     ): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse>
 }

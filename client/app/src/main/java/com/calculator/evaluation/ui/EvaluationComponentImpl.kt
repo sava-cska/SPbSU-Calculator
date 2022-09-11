@@ -131,6 +131,44 @@ class EvaluationComponentImpl(
                 }
             }
         }
+
+        override fun onCommaClick() {
+            dropEvaluation()
+            dropResult()
+            val index = getCurrentIndex()
+            if (index < 0) {
+                return
+            }
+            val newList = itemsState.value.toMutableList()
+            if (index > 0) {
+                /**
+                 * Слева стоит число, с которым мержим эту точку
+                 */
+                val prev = newList[index - 1]
+                if (prev is Numeric) {
+                    newList[index - 1] = prev.copy(value = prev.value.filter { it != '.' } + '.')
+                } else {
+                    newList.add(index, Numeric(value = "0,", Any()))
+                }
+            } else {
+                newList.add(index, Numeric(value = "0.", Any()))
+            }
+            if (index + 1 in newList.indices) {
+                /**
+                 * Если справа стоит число, от него точку следует убрать
+                 */
+                val next = newList[index + 1]
+                if (next is Numeric) {
+                    val updatedNextValue = next.value.filter { it != '.' }
+                    if (updatedNextValue.isEmpty()) {
+                        newList.removeAt(index + 1)
+                    } else {
+                        newList[index + 1] = Numeric(updatedNextValue, Any())
+                    }
+                }
+            }
+            itemsState.value = newList
+        }
     }
 
     init {
