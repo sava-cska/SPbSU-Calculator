@@ -148,7 +148,7 @@ class EvaluationComponentImpl(
                 if (prev is Numeric) {
                     newList[index - 1] = prev.copy(value = prev.value.filter { it != '.' } + '.')
                 } else {
-                    newList.add(index, Numeric(value = "0,", Any()))
+                    newList.add(index, Numeric(value = "0.", Any()))
                 }
             } else {
                 newList.add(index, Numeric(value = "0.", Any()))
