@@ -11,6 +11,8 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface Api {
     @POST("evaluations")
@@ -20,6 +22,6 @@ interface Api {
 
     @GET("evaluations")
     suspend fun getEvaluations(
-        @Body request: GetEvaluationsRequest
+        @Query("UserUid") userUid: String,
     ): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse>
 }

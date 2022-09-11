@@ -30,7 +30,7 @@ class ApiInteractor @Inject constructor(
     }
 
     suspend fun getEvaluations(userId: String): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse> {
-        return api.getEvaluations(GetEvaluationsRequest(userId))
+        return api.getEvaluations(userId)
     }
 
     private fun createEvaluationRequest(

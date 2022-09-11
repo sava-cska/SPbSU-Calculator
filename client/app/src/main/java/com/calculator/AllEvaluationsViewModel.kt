@@ -1,5 +1,6 @@
 package com.calculator
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calculator.entities.EvaluationToken
@@ -46,10 +47,12 @@ class AllEvaluationsViewModel @Inject constructor(
                             }
                         )
                     }
-                    else -> {}
+                    else -> {
+                        throw RuntimeException()
+                    }
                 }
             } catch (e: Exception) {
-                /* Ignore */
+                Log.e("EvaluationsGetAllError", e.stackTraceToString())
             }
         }
     }
