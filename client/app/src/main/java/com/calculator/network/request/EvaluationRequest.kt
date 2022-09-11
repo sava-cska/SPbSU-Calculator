@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class EvaluationRequest(
-    @Json(name = "evaluation") val evaluation: List<Token>,
-    @Json(name = "user_uid") val user_uid: String
+    @Json(name = "Evaluation") val evaluation: List<Token>,
+    @Json(name = "UserUid") val user_uid: String
 )
