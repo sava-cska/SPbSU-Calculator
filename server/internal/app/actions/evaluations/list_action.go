@@ -23,16 +23,19 @@ func HandleEvaluationsList(logger *logrus.Logger, storage *storage.Storage) http
 			return
 		}
 
-		getResponse := make([]ListResponse, len(evals))
+		evaluationHistory := make([]EvaluationHistory, len(evals))
 		for idx := 0; idx < len(evals); idx++ {
-			getResponse[idx] = ListResponse{
-				EvaluationHistory: EvaluationHistory{
-					Evaluation: decode(evals[idx].Evaluation),
-				},
+			evaluationHistory[idx] = EvaluationHistory{
+				Evaluation: decode(evals[idx].Evaluation),
+				Result:     evals[idx].Result,
 			}
 		}
 
-		respJSON, errRespJSON := json.Marshal(getResponse)
+		response := ListResponse{
+			Response: evaluationHistory,
+		}
+
+		respJSON, errRespJSON := json.Marshal(response)
 		if errRespJSON != nil {
 			utils.HandleError(logger, writer, http.StatusInternalServerError, "Can't create JSON object from data.", errRespJSON)
 			return
