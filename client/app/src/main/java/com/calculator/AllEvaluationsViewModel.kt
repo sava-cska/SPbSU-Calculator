@@ -44,7 +44,7 @@ class AllEvaluationsViewModel @Inject constructor(
                     is NetworkResponse.Success<GetEvaluationsResult, GetEvaluationsErrorResponse> -> {
                         innerFlow.emit(
                             evaluations.body.evaluations.map { evaluation ->
-                                evaluation.request.evaluation.map { it.toModelToken() } to evaluation.result
+                                evaluation.evaluation.map { it.toModelToken() } to evaluation.result
                             }
                         )
                     }
