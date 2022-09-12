@@ -32,7 +32,7 @@ func HandleEvaluationsList(logger *logrus.Logger, storage *storage.Storage) http
 		}
 
 		response := ListResponse{
-			Response: evaluationHistory,
+			EvaluationHistory: evaluationHistory,
 		}
 
 		respJSON, errRespJSON := json.Marshal(response)

@@ -6,5 +6,5 @@ type EvaluationHistory struct {
 }
 
 type ListResponse struct {
-	Response []EvaluationHistory
+	EvaluationHistory []EvaluationHistory
 }
