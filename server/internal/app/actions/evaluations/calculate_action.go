@@ -14,7 +14,7 @@ func HandleEvaluationsCalculate(logger *logrus.Logger, storage *storage.Storage)
 	evaluationsDAO := storage.Evaluations()
 
 	return func(writer http.ResponseWriter, request *http.Request) {
-		logger.Debugf("POST - Called URI %s", request.RequestURI)
+		logger.Debugf("HandleEvaluationsCalculate - Called URI %s", request.RequestURI)
 
 		var expression CalculateRequest
 		if errJSON := utils.ParseBody(logger, interface{}(&expression), writer, request); errJSON != nil {

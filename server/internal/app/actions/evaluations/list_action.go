@@ -11,7 +11,7 @@ import (
 func HandleEvaluationsList(logger *logrus.Logger, storage *storage.Storage) http.HandlerFunc {
 
 	return func(writer http.ResponseWriter, request *http.Request) {
-		logger.Debugf("GET - Called URI %s", request.RequestURI)
+		logger.Debugf("HandleEvaluationsList - Called URI %s", request.RequestURI)
 		var user ListRequest
 		if errJSON := utils.ParseBody(logger, interface{}(&user), writer, request); errJSON != nil {
 			return
