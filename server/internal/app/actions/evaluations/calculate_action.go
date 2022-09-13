@@ -11,8 +11,6 @@ import (
 )
 
 func HandleEvaluationsCalculate(logger *logrus.Logger, storage *storage.Storage) http.HandlerFunc {
-	evaluationsDAO := storage.Evaluations()
-
 	return func(writer http.ResponseWriter, request *http.Request) {
 		logger.Debugf("HandleEvaluationsCalculate - Called URI %s", request.RequestURI)
 
@@ -38,7 +36,7 @@ func HandleEvaluationsCalculate(logger *logrus.Logger, storage *storage.Storage)
 		result := fmt.Sprintf("%v", rawResult)
 		logger.Debugf("Result of the expression %s equals %s", stringExpr, result)
 
-		evaluationsDAO.Upsert(expression.UserUid, encode(expression.Evaluation), result)
+		storage.Evaluations().Upsert(expression.UserUid, encode(expression.Evaluation), result)
 
 		postResponse := CalculateResponse{Result: result}
 		respJSON, errRespJSON := json.Marshal(postResponse)
