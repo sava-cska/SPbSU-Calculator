@@ -15,7 +15,7 @@ type Record struct {
 }
 
 func (dao *EvaluationsDAO) Upsert(userId string, evaluation string, result string) error {
-	err := dao.storage.db.QueryRow(
+	_, err := dao.storage.db.Exec(
 		"INSERT INTO\n"+
 			"evaluation_history (user_id, updated, evaluation, result)\n"+
 			"VALUES ($1, $2, $3, $4)",
@@ -24,7 +24,7 @@ func (dao *EvaluationsDAO) Upsert(userId string, evaluation string, result strin
 		evaluation,
 		result,
 	)
-	return err.Err()
+	return err
 }
 
 func (dao *EvaluationsDAO) List(userId string) ([]Record, error) {

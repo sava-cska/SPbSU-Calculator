@@ -58,7 +58,6 @@ func (server *Server) configureStorage() error {
 		return err
 	}
 	server.storage = localStorage
-
 	return nil
 }
 

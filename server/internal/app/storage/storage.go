@@ -22,28 +22,18 @@ func (storage *Storage) Open() error {
 	if err != nil {
 		return err
 	}
-
 	if err := db.Ping(); err != nil {
 		return err
 	}
-
 	storage.db = db
-
 	return nil
 }
 
-func (storage *Storage) Close() {
-	storage.db.Close()
-}
-
 func (storage *Storage) Evaluations() *EvaluationsDAO {
-	if storage.evaluationsDao != nil {
-		return storage.evaluationsDao
+	if storage.evaluationsDao == nil {
+		storage.evaluationsDao = &EvaluationsDAO{
+			storage: storage,
+		}
 	}
-
-	storage.evaluationsDao = &EvaluationsDAO{
-		storage: storage,
-	}
-
 	return storage.evaluationsDao
 }
