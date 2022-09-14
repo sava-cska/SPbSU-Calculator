@@ -36,7 +36,10 @@ func HandleEvaluationsCalculate(logger *logrus.Logger, storage *storage.Storage)
 		result := fmt.Sprintf("%v", rawResult)
 		logger.Debugf("Result of the expression %s equals %s", stringExpr, result)
 
-		storage.Evaluations().Upsert(expression.UserUid, encode(expression.Evaluation), result)
+		storage.Evaluations().Upsert(expression.UserUid,
+			encode(expression.Evaluation),
+			&result, // use nil if you need to upsert evaluation with error
+		)
 
 		postResponse := CalculateResponse{Result: result}
 		respJSON, errRespJSON := json.Marshal(postResponse)

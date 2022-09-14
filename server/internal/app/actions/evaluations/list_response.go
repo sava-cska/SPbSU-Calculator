@@ -2,7 +2,7 @@ package evaluations
 
 type EvaluationHistory struct {
 	Evaluation []Token
-	Result     string
+	Result     *string `json:"Result,omitempty"`
 }
 
 type ListResponse struct {

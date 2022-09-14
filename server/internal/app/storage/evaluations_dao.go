@@ -11,10 +11,10 @@ type EvaluationsDAO struct {
 type Record struct {
 	UserId     string
 	Evaluation string
-	Result     string
+	Result     *string
 }
 
-func (dao *EvaluationsDAO) Upsert(userId string, evaluation string, result string) error {
+func (dao *EvaluationsDAO) Upsert(userId string, evaluation string, result *string) error {
 	_, err := dao.storage.db.Exec(
 		"INSERT INTO\n"+
 			"evaluation_history (user_id, updated, evaluation, result)\n"+
