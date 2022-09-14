@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.calculator.R
 import com.calculator.entities.*
+import com.calculator.evaluation.EvaluationsDataSource
 import com.calculator.evaluation.Evaluator
 import com.calculator.input.api.CalculatorInputListener
 import com.calculator.input.api.CalculatorInputObserver
@@ -22,6 +23,7 @@ class EvaluationComponentImpl(
     evaluator: Evaluator,
     lifecycleOwner: LifecycleOwner,
     context: Context,
+    evaluationsDataSource: EvaluationsDataSource,
 ) : EvaluationComponent {
     private val itemsState: MutableState<List<ListItem>> = mutableStateOf(listOf(EmptyField))
 
@@ -123,6 +125,7 @@ class EvaluationComponentImpl(
                         is Evaluator.Result.Success -> {
                             dropResult()
                             appendResult(res.res)
+                            evaluationsDataSource.reload()
                         }
                         is Evaluator.Result.Error -> Toast.makeText(
                             context,

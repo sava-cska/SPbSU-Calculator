@@ -117,7 +117,8 @@ fun MainScreen(
                                 },
                                 evaluator = evaluator,
                                 lifecycleOwner = lifecycleOwner,
-                                context = context
+                                context = context,
+                                evaluationsDataSource = evaluationsDataSource,
                             )
                             component.setTokens(tokens = item.first, result = item.second, editable = false)
                             component
