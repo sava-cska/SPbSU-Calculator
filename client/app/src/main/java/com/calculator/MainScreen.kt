@@ -1,6 +1,7 @@
 package com.calculator
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -36,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.ui.core.gesture.PressReleasedGestureDetector
 import androidx.ui.foundation.Clickable
 import com.calculator.entities.EvaluationToken
@@ -108,7 +110,7 @@ fun MainScreen(
                 content = {
                     itemsIndexed(evaluations) { index, item ->
                         val component = remember {
-                            evaluationComponentFactory.createEvaluationComponent(
+                            val component = evaluationComponentFactory.createEvaluationComponent(
                                 calculatorInputObserver = object : CalculatorInputObserver {
                                     override fun addListener(listener: CalculatorInputListener) = Unit
                                     override fun removeListener(listener: CalculatorInputListener) = Unit
@@ -117,9 +119,11 @@ fun MainScreen(
                                 lifecycleOwner = lifecycleOwner,
                                 context = context
                             )
+                            component.setTokens(tokens = item.first, result = item.second, editable = false)
+                            component
                         }
 
-                        component.setTokens(tokens = item.first, result = item.second, editable = false)
+                        
                         
                         Box(
                             modifier = Modifier
@@ -130,7 +134,7 @@ fun MainScreen(
                                     navController.navigate("evaluation") {
                                         launchSingleTop = true
                                     }
-                                },
+                                },  
                         ) {
                             component.EvaluationContent()
                         }

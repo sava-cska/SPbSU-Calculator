@@ -1,5 +1,7 @@
 package com.calculator.evaluation.ui
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
