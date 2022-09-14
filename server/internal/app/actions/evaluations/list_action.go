@@ -2,10 +2,11 @@ package evaluations
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/sava-cska/SPbSU-Calculator/internal/app/storage"
 	"github.com/sava-cska/SPbSU-Calculator/internal/utils"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func HandleEvaluationsList(logger *logrus.Logger, storage *storage.Storage) http.HandlerFunc {
@@ -14,6 +15,7 @@ func HandleEvaluationsList(logger *logrus.Logger, storage *storage.Storage) http
 		logger.Debugf("HandleEvaluationsList - Called URI %s", request.RequestURI)
 		var user ListRequest
 		if errJSON := utils.ParseBody(logger, interface{}(&user), writer, request); errJSON != nil {
+			utils.HandleError(logger, writer, http.StatusBadRequest, "Can't parse List query", errJSON)
 			return
 		}
 
@@ -26,7 +28,7 @@ func HandleEvaluationsList(logger *logrus.Logger, storage *storage.Storage) http
 		evaluationHistory := make([]EvaluationHistory, len(evals))
 		for idx := 0; idx < len(evals); idx++ {
 			evaluationHistory[idx] = EvaluationHistory{
-				Evaluation: decode(evals[idx].Evaluation),
+				Evaluation: decode(evals[idx].Evaluation, logger, writer),
 				Result:     evals[idx].Result,
 			}
 		}
