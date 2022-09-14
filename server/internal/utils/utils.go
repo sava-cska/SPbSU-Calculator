@@ -2,13 +2,19 @@ package utils
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
+	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 func HandleError(logger *logrus.Logger, writer http.ResponseWriter, code int, reason string, err error) {
-	logger.Errorln(reason, err)
+	errText := ""
+	if err != nil {
+		errText = fmt.Sprint(err)
+	}
+	logger.Error(reason, errText)
 	writer.WriteHeader(code)
 	writer.Write([]byte(reason))
 }
