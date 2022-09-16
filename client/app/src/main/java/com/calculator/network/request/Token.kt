@@ -5,8 +5,9 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class Token(
-    @Json(name = "type") val type : String,
-    @Json(name = "body") val body : String
+    @Json(name = "Type") val type : String,
+    @Json(name = "Body") val body : String
+
 ) {
     companion object {
         val NUMBER_TYPE = "Number"

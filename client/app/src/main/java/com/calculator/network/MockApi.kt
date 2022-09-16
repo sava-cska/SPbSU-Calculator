@@ -26,65 +26,7 @@ class MockApi : Api {
     override suspend fun getEvaluations(request: GetEvaluationsRequest): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse> {
         delay(500)
         return NetworkResponse.Success(
-            GetEvaluationsResult(
-                listOf(
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                    EvaluationRequestAndResult(
-                        EvaluationRequest(
-                            listOf(Token(Token.NUMBER_TYPE, "42")),
-                            "67"
-                        ), "137"
-                    ),
-                )
-
-            ), Response.success(200, "OK")
+            GetEvaluationsResult(listOf()), Response.success(200, "OK")
         )
     }
 }

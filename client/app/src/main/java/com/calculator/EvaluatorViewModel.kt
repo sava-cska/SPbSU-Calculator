@@ -1,6 +1,8 @@
 package com.calculator
 
 import android.provider.Settings
+import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calculator.entities.EvaluationToken
@@ -40,6 +42,8 @@ class EvaluatorViewModel @Inject constructor(
                     }
                 }
             } catch (error: Throwable) {
+                Log.e("EvaluatorViewModel", error.stackTraceToString())
+
                 return@async Exception(error)
             }
         }

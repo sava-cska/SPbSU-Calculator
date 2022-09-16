@@ -1,11 +1,15 @@
 package com.calculator
 
+import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calculator.entities.EvaluationToken
 import com.calculator.entities.UserIdHolder
 import com.calculator.evaluation.EvaluationsDataSource
 import com.calculator.network.interactor.ApiInteractor
+import com.calculator.network.request.GetEvaluationsRequest
+
 import com.calculator.network.request.Token
 import com.calculator.network.response.EvaluationResult
 import com.calculator.network.response.GetEvaluationsResult
@@ -28,28 +32,31 @@ class AllEvaluationsViewModel @Inject constructor(
     private val apiInteractor: ApiInteractor,
     private val userIdHolder: UserIdHolder,
 ) : ViewModel(), EvaluationsDataSource {
-    override val evaluations: StateFlow<List<Pair<List<EvaluationToken>, String>>>
+    override val evaluations: StateFlow<List<Pair<List<EvaluationToken>, String?>>>
         get() {
             return innerFlow
         }
 
-    private val innerFlow: MutableStateFlow<List<Pair<List<EvaluationToken>, String>>> = MutableStateFlow(listOf())
+    private val innerFlow: MutableStateFlow<List<Pair<List<EvaluationToken>, String?>>> = MutableStateFlow(listOf())
+
 
     override fun reload() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                when (val evaluations = apiInteractor.getEvaluations(userId = userIdHolder.userId)) {
+                when (val evaluations = apiInteractor.getEvaluations(GetEvaluationsRequest(userIdHolder.userId))) {
                     is NetworkResponse.Success<GetEvaluationsResult, GetEvaluationsErrorResponse> -> {
                         innerFlow.emit(
                             evaluations.body.evaluations.map { evaluation ->
-                                evaluation.request.evaluation.map { it.toModelToken() } to evaluation.result
+                                evaluation.evaluation.map { it.toModelToken() } to evaluation.result
                             }
                         )
                     }
-                    else -> {}
+                    else -> {
+                        throw RuntimeException()
+                    }
                 }
             } catch (e: Exception) {
-                /* Ignore */
+                Log.e("EvaluationsGetAllError", e.stackTraceToString())
             }
         }
     }

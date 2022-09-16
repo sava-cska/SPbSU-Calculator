@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface EvaluationsDataSource {
     
-    val evaluations: StateFlow<List<Pair<List<EvaluationToken>, String>>>
+    val evaluations: StateFlow<List<Pair<List<EvaluationToken>, String?>>>
+
     
     fun reload()
 }

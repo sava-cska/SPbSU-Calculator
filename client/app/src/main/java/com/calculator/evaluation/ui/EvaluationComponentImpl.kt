@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.calculator.R
 import com.calculator.entities.*
+import com.calculator.evaluation.EvaluationsDataSource
 import com.calculator.evaluation.Evaluator
 import com.calculator.input.api.CalculatorInputListener
 import com.calculator.input.api.CalculatorInputObserver
@@ -22,10 +23,15 @@ class EvaluationComponentImpl(
     evaluator: Evaluator,
     lifecycleOwner: LifecycleOwner,
     context: Context,
+    evaluationsDataSource: EvaluationsDataSource,
+
 ) : EvaluationComponent {
     private val itemsState: MutableState<List<ListItem>> = mutableStateOf(listOf(EmptyField))
 
     private var deferredEvaluation: Deferred<Evaluator.Result>? = null
+    
+    private var editable: Boolean = true
+
 
     private val listener = object : CalculatorInputListener {
         override fun onOperationClick(operation: Operation) {
@@ -121,6 +127,8 @@ class EvaluationComponentImpl(
                         is Evaluator.Result.Success -> {
                             dropResult()
                             appendResult(res.res)
+                            evaluationsDataSource.reload()
+
                         }
                         is Evaluator.Result.Error -> Toast.makeText(
                             context,
@@ -131,6 +139,46 @@ class EvaluationComponentImpl(
                 }
             }
         }
+
+        override fun onCommaClick() {
+            dropEvaluation()
+            dropResult()
+            val index = getCurrentIndex()
+            if (index < 0) {
+                return
+            }
+            val newList = itemsState.value.toMutableList()
+            if (index > 0) {
+                /**
+                 * Слева стоит число, с которым мержим эту точку
+                 */
+                val prev = newList[index - 1]
+                if (prev is Numeric) {
+                    newList[index - 1] = prev.copy(value = prev.value.filter { it != '.' } + '.')
+                } else {
+                    newList.add(index, Numeric(value = "0.", Any()))
+                }
+            } else {
+                newList.add(index, Numeric(value = "0.", Any()))
+            }
+            val updatedIndex = newList.indexOf(EmptyField)
+            if (updatedIndex + 1 in newList.indices) {
+                /**
+                 * Если справа стоит число, от него точку следует убрать
+                 */
+                val next = newList[updatedIndex + 1]
+                if (next is Numeric) {
+                    val updatedNextValue = next.value.filter { it != '.' }
+                    if (updatedNextValue.isEmpty()) {
+                        newList.removeAt(updatedIndex + 1)
+                    } else {
+                        newList[updatedIndex + 1] = Numeric(updatedNextValue, Any())
+                    }
+                }
+            }
+            itemsState.value = newList
+        }
+
     }
 
     init {
@@ -142,16 +190,19 @@ class EvaluationComponentImpl(
         EvaluationContent(
             itemsState = itemsState,
             onClick = { position, item ->
-                if (itemsState.value.contains(item) && item !is EqualitySign && item !is ResultField) {
+                if (itemsState.value.contains(item) && item !is EqualitySign && item !is ResultField && editable) {
+
                     itemsState.value =
                         processItems(itemsState.value, SelectionData(item, position))
                 }
-            }
+            },
         )
     }
 
     override fun setTokens(tokens: List<EvaluationToken>, result: String?, editable: Boolean) {
         dropEvaluation()
+        this.editable = editable
+
         itemsState.value = buildList {
             if (editable) {
                 add(EmptyField)

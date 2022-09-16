@@ -17,4 +17,6 @@ interface CalculatorInputListener {
     fun onClearAllClick()
 
     fun onEvaluateClick()
+    
+    fun onCommaClick()
 }

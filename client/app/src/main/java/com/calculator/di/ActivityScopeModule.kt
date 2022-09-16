@@ -3,6 +3,7 @@ package com.calculator.di
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.calculator.entities.EvaluationToken
+import com.calculator.evaluation.EvaluationsDataSource
 import com.calculator.evaluation.Evaluator
 import com.calculator.evaluation.ui.EvaluationComponent
 import com.calculator.evaluation.ui.EvaluationComponentFactory
@@ -31,10 +32,12 @@ class ActivityScopeModule {
                 calculatorInputObserver: CalculatorInputObserver,
                 evaluator: Evaluator,
                 lifecycleOwner: LifecycleOwner,
-                context: Context
+                context: Context,
+                evaluationsDataSource: EvaluationsDataSource,
             ): EvaluationComponent {
                 return EvaluationComponentImpl(
-                    calculatorInputObserver, evaluator, lifecycleOwner, context
+                    calculatorInputObserver, evaluator, lifecycleOwner, context, evaluationsDataSource
+
                 )
             }
 

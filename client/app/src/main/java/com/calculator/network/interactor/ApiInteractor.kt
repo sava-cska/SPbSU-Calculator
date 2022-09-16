@@ -29,8 +29,8 @@ class ApiInteractor @Inject constructor(
         return api.evaluate(createEvaluationRequest(tokens, userId))
     }
 
-    suspend fun getEvaluations(userId: String): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse> {
-        return api.getEvaluations(GetEvaluationsRequest(userId))
+    suspend fun getEvaluations(request: GetEvaluationsRequest): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse> {
+        return api.getEvaluations(request)
     }
 
     private fun createEvaluationRequest(

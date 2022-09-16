@@ -11,15 +11,17 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface Api {
-    @POST("evaluations")
+    @POST("evaluations/calculate")
     suspend fun evaluate(
         @Body request: EvaluationRequest
     ): NetworkResponse<EvaluationResult, EvaluationErrorResponse>
 
-    @GET("evaluations")
+    @POST("evaluations/list")
     suspend fun getEvaluations(
-        @Body request: GetEvaluationsRequest
+        @Body request: GetEvaluationsRequest,
     ): NetworkResponse<GetEvaluationsResult, GetEvaluationsErrorResponse>
 }

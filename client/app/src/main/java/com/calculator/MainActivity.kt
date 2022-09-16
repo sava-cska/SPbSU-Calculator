@@ -38,6 +38,8 @@ class MainActivity : ComponentActivity() {
             evaluator = viewModel,
             lifecycleOwner = this,
             context = this,
+            evaluationsDataSource = evaluationsDataSource,
+
         )
         setContent {
             CalculatorTheme {
