@@ -1,6 +1,7 @@
 package com.calculator
 
 import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calculator.entities.EvaluationToken
@@ -8,6 +9,7 @@ import com.calculator.entities.UserIdHolder
 import com.calculator.evaluation.EvaluationsDataSource
 import com.calculator.network.interactor.ApiInteractor
 import com.calculator.network.request.GetEvaluationsRequest
+
 import com.calculator.network.request.Token
 import com.calculator.network.response.EvaluationResult
 import com.calculator.network.response.GetEvaluationsResult
@@ -36,6 +38,7 @@ class AllEvaluationsViewModel @Inject constructor(
         }
 
     private val innerFlow: MutableStateFlow<List<Pair<List<EvaluationToken>, String?>>> = MutableStateFlow(listOf())
+
 
     override fun reload() {
         viewModelScope.launch(Dispatchers.IO) {

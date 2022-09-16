@@ -37,6 +37,7 @@ class ActivityScopeModule {
             ): EvaluationComponent {
                 return EvaluationComponentImpl(
                     calculatorInputObserver, evaluator, lifecycleOwner, context, evaluationsDataSource
+
                 )
             }
 

@@ -162,6 +162,7 @@ class CalculatorKeyboard : CalculatorInputComponent {
             Color.Black,
             CalculatorButton.CommaButton
         ),
+
         KeyBoardButtonParams(
             R.drawable.ic_icons8_equal_sign_100,
             32.dp,

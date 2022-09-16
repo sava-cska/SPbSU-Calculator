@@ -111,7 +111,7 @@ fun MainScreen(
                     itemsIndexed(evaluations) { index, item ->
                         val component = remember {
                             val component = evaluationComponentFactory.createEvaluationComponent(
-                                calculatorInputObserver = object : CalculatorInputObserver {
+                                    calculatorInputObserver = object : CalculatorInputObserver {
                                     override fun addListener(listener: CalculatorInputListener) = Unit
                                     override fun removeListener(listener: CalculatorInputListener) = Unit
                                 },
@@ -125,6 +125,7 @@ fun MainScreen(
                         }
 
                         
+
                         
                         Box(
                             modifier = Modifier
@@ -136,6 +137,7 @@ fun MainScreen(
                                         launchSingleTop = true
                                     }
                                 },  
+
                         ) {
                             component.EvaluationContent()
                         }

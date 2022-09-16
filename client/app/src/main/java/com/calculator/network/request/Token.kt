@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonClass
 data class Token(
     @Json(name = "Type") val type : String,
     @Json(name = "Body") val body : String
+
 ) {
     companion object {
         val NUMBER_TYPE = "Number"

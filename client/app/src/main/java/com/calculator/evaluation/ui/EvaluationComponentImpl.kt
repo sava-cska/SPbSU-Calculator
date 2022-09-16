@@ -24,12 +24,14 @@ class EvaluationComponentImpl(
     lifecycleOwner: LifecycleOwner,
     context: Context,
     evaluationsDataSource: EvaluationsDataSource,
+
 ) : EvaluationComponent {
     private val itemsState: MutableState<List<ListItem>> = mutableStateOf(listOf(EmptyField))
 
     private var deferredEvaluation: Deferred<Evaluator.Result>? = null
     
     private var editable: Boolean = true
+
 
     private val listener = object : CalculatorInputListener {
         override fun onOperationClick(operation: Operation) {
@@ -126,6 +128,7 @@ class EvaluationComponentImpl(
                             dropResult()
                             appendResult(res.res)
                             evaluationsDataSource.reload()
+
                         }
                         is Evaluator.Result.Error -> Toast.makeText(
                             context,
@@ -175,6 +178,7 @@ class EvaluationComponentImpl(
             }
             itemsState.value = newList
         }
+
     }
 
     init {
@@ -187,6 +191,7 @@ class EvaluationComponentImpl(
             itemsState = itemsState,
             onClick = { position, item ->
                 if (itemsState.value.contains(item) && item !is EqualitySign && item !is ResultField && editable) {
+
                     itemsState.value =
                         processItems(itemsState.value, SelectionData(item, position))
                 }
@@ -197,6 +202,7 @@ class EvaluationComponentImpl(
     override fun setTokens(tokens: List<EvaluationToken>, result: String?, editable: Boolean) {
         dropEvaluation()
         this.editable = editable
+
         itemsState.value = buildList {
             if (editable) {
                 add(EmptyField)

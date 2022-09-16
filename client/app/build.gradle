@@ -110,6 +110,7 @@ dependencies {
     implementation 'com.facebook.flipper:flipper:0.163.0'
     implementation 'com.facebook.soloader:soloader:0.10.4'
     implementation 'com.facebook.flipper:flipper-network-plugin:0.163.0'
+
     
     def nav_version = "2.5.2"
 

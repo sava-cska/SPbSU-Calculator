@@ -39,6 +39,7 @@ class MainActivity : ComponentActivity() {
             lifecycleOwner = this,
             context = this,
             evaluationsDataSource = evaluationsDataSource,
+
         )
         setContent {
             CalculatorTheme {
